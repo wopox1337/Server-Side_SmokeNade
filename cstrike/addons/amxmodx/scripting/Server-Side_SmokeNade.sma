@@ -21,7 +21,7 @@
  *   exactly repeating the shape and animation of the standard smoke.
  *
  * Important note:
- *   If the smoke effect is fully recreated (`amx_smokegren_replace` == 2), the load is increased 2x.
+ *   If the smoke effect is fully recreated (`amx_smokegren_replacemode` == 2), the load is increased 2x.
  *
  *   Using full smoke grenade recreation (2) is not recommended for servers
  *   that have more than 10 players online (e.g. servers with 32\32 players online).
@@ -35,12 +35,12 @@
  *
  * Calculations.
  *   With standard parameters:
- *     - amx_smokegren_replace 1
+ *     - amx_smokegren_replacemode 1
  *     - amx_smokegren_pieces 8
  *   One smoke cloud will create 17 entities.
  *
  *   At maximum parameters:
- *     - amx_smokegren_replace 2
+ *     - amx_smokegren_replacemode 2
  *     - amx_smokegren_pieces 10
  *   One smoke cloud will create 41 entities.
  *
@@ -81,7 +81,12 @@
  *   - Correct the remaining visual inaccuracies.
  *   - Implement API;
  *   - Improve integration with GameDLL;
- *   - Optimize sprite.
+ *   - Optimize sprite;
+ *   - New `amx_smokegren_replacemode` 3 - For better compatibility with the original smoke.
+ *
+ * Known bugs:
+ *   - The smoke is not visible on the overview map. (from https://forums.alliedmods.net/showpost.php?p=972017&postcount=40);
+ *   - If the smoke duration changes, the grenade entity may not match the smoke duration.
  *
  */
 
@@ -113,7 +118,7 @@ enum _: CustomPEV {
     _pev_timeCreated    = pev_fuser4,
 }
 
-static        amx_smokegren_replace
+static        amx_smokegren_replacemode
 static        amx_smokegren_fix_waterrender
 static Float: amx_smokegren_pieces
 static Float: amx_smokegren_color_r
@@ -160,13 +165,13 @@ public EV_Playback(flags, invoker, eventIndex, Float: delay, Float: origin[3],
     if (!isFirstSmoke)
         return FMRES_IGNORED
 
-    new bool: isSmokeReplaced = EV_CreateSmoke(origin, .createSmokePop = (amx_smokegren_replace >= 2))
+    new bool: isSmokeReplaced = EV_CreateSmoke(origin, .createSmokePop = (amx_smokegren_replacemode >= 2))
     return isSmokeReplaced ? FMRES_SUPERCEDE : FMRES_IGNORED
 }
 
 static bool: EV_CreateSmoke(const Float: origin[3], const bool: createSmokePop = true) {
     // https://github.com/s1lentq/ReGameDLL_CS/blob/1e49d947927e7f6f2fd70d8398e4a9519a34450a/regamedll/dlls/ggrenade.cpp#L603
-    if (amx_smokegren_replace <= 0)
+    if (amx_smokegren_replacemode <= 0)
         return false
 
     CreateGasInside(origin, GetColorArray(), amx_smokegren_color_a)
@@ -495,14 +500,14 @@ static CreateGasInside(const Float: origin[3], Float: color[3], const Float: bri
 static Create_ConVars(const bool: createConfigFile = true) {
     bind_pcvar_num(
         create_cvar(
-            "amx_smokegren_replace", "1",
+            "amx_smokegren_replacemode", "1",
             .has_min = true, .min_val = 0.0,
             .has_max = true, .max_val = 2.0,
             .description = "0 - disabled (don't replace client smoke); ^n\
                             1 - main cloud only (optimization); ^n\
                             2 - fully recreation (2x load)."
         ),
-        amx_smokegren_replace
+        amx_smokegren_replacemode
     )
 
     bind_pcvar_num(
