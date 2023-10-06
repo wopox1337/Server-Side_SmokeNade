@@ -283,7 +283,7 @@ static CPartSmokeGrenade_Think(const entity) {
 
     if (renderAmt > 1.0) {
         const Float: fadeSpeed = 0.05
-        set_pev(entity, pev_nextthink, get_gametime() + fadeSpeed)
+        set_pev(entity, pev_nextthink, gametime + fadeSpeed)
 
         return
     }
