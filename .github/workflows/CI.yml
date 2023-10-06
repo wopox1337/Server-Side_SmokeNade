@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - "**.md"
+      - "**.spr"
+
+  pull_request:
+    types: [opened, reopened, synchronize]
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup AMXXPawn Compiler
+        uses: wopox1337/setup-amxxpawn@v1
+        with:
+          version: "1.9"
+
+      - name: Compile plugins
+        working-directory: cstrike/addons/amxmodx/scripting/
+        run: |
+          compile() {
+            sourcefile=$1
+            amxxfile="$(echo $sourcefile | sed -e 's/\.sma$/.amxx/')"
+            output_path="../plugins/$amxxfile"
+
+            mkdir -p $(dirname $output_path)
+
+            echo -n "Compiling $sourcefile ... "
+            amxxpc $sourcefile -o"$output_path" \
+              -i"include"
+          }
+          export -f compile
+
+          find * -type f -name "*.sma" -exec bash -c 'compile "$0"' {} \;
+
