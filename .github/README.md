@@ -17,6 +17,7 @@
         height="240" />
 </p>
 
+[Video preview](https://youtu.be/R45oCX-7y3g)
 
 <p align="center">
     Is an AMXModX plugin that enhances the smoke grenade effects in <a href="https://store.steampowered.com/app/10/CounterStrike/">Counter-Strike 1.6</a> (and CS: Condition Zero).
