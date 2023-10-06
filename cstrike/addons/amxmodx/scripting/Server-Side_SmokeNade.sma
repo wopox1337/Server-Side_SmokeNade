@@ -60,7 +60,8 @@
  *   - Doesn't break compatibility with the game:
  *       - Bots understand where smoke is located;
  *       - Cannot see nickname through smoke (mp_playerid);
- *       - Hostages can react to smoke grenade.
+ *       - Hostages can react to smoke grenade;
+ *       - Overview map can show smokes.
  *   - Easy to adjust the color, duration and performance of the smoke cloud;
  *   - No render bugs when positioning the smoke cloud on water;
  *   - Smoke cloud has a very close to the original visual appearance (authenticity);
@@ -84,7 +85,6 @@
  *   - Optimize sprite;
  *
  * Known bugs:
- *   - The smoke is not visible on the overview map. (from https://forums.alliedmods.net/showpost.php?p=972017&postcount=40);
  *   - If the smoke duration changes, the grenade entity may not match the smoke duration.
  *
  */
