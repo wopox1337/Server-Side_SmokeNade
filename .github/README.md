@@ -6,7 +6,8 @@
     <img
         src="https://github.com/wopox1337/Server-Side_SmokeNade/assets/18553678/d079a782-31d8-4b69-8efc-d4db47a0b4c3"
         width="320"
-        height="240" /><br>
+        height="240" />
+    <br>
     <img
         src="https://github.com/wopox1337/Server-Side_SmokeNade/assets/18553678/f935dbd9-6870-4889-b618-ca1c7ccbfc38"
         width="320"
@@ -15,9 +16,33 @@
         src="https://github.com/wopox1337/Server-Side_SmokeNade/assets/18553678/d975b3d4-c69b-4a5b-a11c-fbca2fc7e310"
         width="320"
         height="240" />
+    <br>
+    <img
+        src="https://github.com/wopox1337/Server-Side_SmokeNade/assets/18553678/a5d361ff-349f-495e-a8a5-07106b0f45ef"
+        width="128"
+        height="96" />
+    <img
+        src="https://github.com/wopox1337/Server-Side_SmokeNade/assets/18553678/a526d5cb-ea7f-4bbc-b422-03f73c7ab463"
+        width="128"
+        height="96" />
+    <img
+        src="https://github.com/wopox1337/Server-Side_SmokeNade/assets/18553678/d24b6757-51c9-4729-a6c4-f68cca65bd76"
+        width="128"
+        height="96" />
+    <img
+        src="https://github.com/wopox1337/Server-Side_SmokeNade/assets/18553678/d7d7e564-2a79-41d9-aa2f-fa2d3476e333"
+        width="128"
+        height="96" />
+    <img
+        src="https://github.com/wopox1337/Server-Side_SmokeNade/assets/18553678/0d8ac844-143e-4903-b304-af254279154c"
+        width="128"
+        height="96" />
+    <br>    
+    Video preview: <a href="https://youtu.be/R45oCX-7y3g">#1</a> | <a href="https://youtu.be/rxIxt0shDO0">#2</a>
+
+    
 </p>
 
-[Video preview](https://youtu.be/R45oCX-7y3g)
 
 <p align="center">
     Is an AMXModX plugin that enhances the smoke grenade effects in <a href="https://store.steampowered.com/app/10/CounterStrike/">Counter-Strike 1.6</a> (and CS: Condition Zero).
