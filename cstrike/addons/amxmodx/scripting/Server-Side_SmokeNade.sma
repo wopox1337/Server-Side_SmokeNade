@@ -119,11 +119,8 @@ enum _: CustomPEV {
 
 static        amx_smokegren_replacemode
 static        amx_smokegren_fix_waterrender
+static Float: amx_smokegren_color[4]
 static Float: amx_smokegren_pieces
-static Float: amx_smokegren_color_r
-static Float: amx_smokegren_color_g
-static Float: amx_smokegren_color_b
-static Float: amx_smokegren_color_a
 static Float: amx_smokegren_lifetime
 
 public plugin_precache() {
@@ -173,10 +170,13 @@ static bool: EV_CreateSmoke(const Float: origin[3]) {
     if (amx_smokegren_replacemode == 0)
         return false
 
-    CreateGasInside(origin, GetColorArray(), amx_smokegren_color_a)
+    new Float: colors[4]
+    colors = GetColors(amx_smokegren_color)
+
+    CreateGasInside(origin, colors)
 
     if (amx_smokegren_replacemode == 3)
-        CreateSmokePop(origin, GetColorArray(), amx_smokegren_color_a)
+        CreateSmokePop(origin, colors)
 
     if (amx_smokegren_replacemode >= 2)
         return true
@@ -207,7 +207,7 @@ public CSGameRules_RestartRound() {
 
 static CPartSmokeGrenade_Create(const Float: origin[3], const Float: velocity[3],
                         const model[], const Float: scale,
-                        const Float: color[3] = { 175.0, 175.0, 175.0 }, const Float: brightness = 190.0) {
+                        const Float: color[4] = { 175.0, 175.0, 175.0, 190.0 }) {
 
     new entity = engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, g_baseClassname))
     set_pev(entity, pev_classname, g_className)
@@ -221,7 +221,7 @@ static CPartSmokeGrenade_Create(const Float: origin[3], const Float: velocity[3]
 
     set_pev(entity, pev_rendermode, kRenderTransAlpha)
     set_pev(entity, pev_rendercolor, color)
-    set_pev(entity, pev_renderamt, brightness)
+    set_pev(entity, pev_renderamt, color[3])
 
     #if (defined DEBUG)
         client_print(0, print_center, "Smoke puffs entity count: `%i`", entityCount(1))
@@ -309,16 +309,14 @@ static CPartSmokeGrenade_Think(const entity) {
 }
 
 static CreateGasSmoke(const Float: origin[3], const Float: velocity[3],
-                    const Float: color[3],
-                    Float: brightness, bool: insideCloud) {
+                    const Float: color[4], bool: insideCloud) {
 
     new entity = CPartSmokeGrenade_Create(
         .origin = origin,
         .velocity = velocity,
         .model = g_sprFile,
         .scale = random_float(2.5, 4.0),
-        .color = color,
-        .brightness = brightness
+        .color = color
     )
 
     static Float: avelocity[3]
@@ -346,7 +344,7 @@ static CreateGasSmoke(const Float: origin[3], const Float: velocity[3],
     return entity
 }
 
-static CreateSmokePop(const Float: origin[3], Float: color[3], Float: brightness) {
+static CreateSmokePop(const Float: origin[3], Float: color[4]) {
     new Float: step = 360.0 / amx_smokegren_pieces
 
     static Float: angles[3]
@@ -363,7 +361,7 @@ static CreateSmokePop(const Float: origin[3], Float: color[3], Float: brightness
             velocity[i] = (vForward[i] * 375) + (vUp[i] * 165)
         }
 
-        CreateGasSmoke(origin, velocity, color, brightness, .insideCloud = false)
+        CreateGasSmoke(origin, velocity, color, .insideCloud = false)
     }
 
     for (new Float: angleStep = 0.0; angleStep < 360.0; angleStep += step) {
@@ -377,7 +375,7 @@ static CreateSmokePop(const Float: origin[3], Float: color[3], Float: brightness
             velocity[i] = (vForward[i] * 375) + (vUp[i] * 265)
         }
 
-        CreateGasSmoke(origin, velocity, color, brightness, .insideCloud = false)
+        CreateGasSmoke(origin, velocity, color, .insideCloud = false)
     }
 
     #if (defined CLIENT_WIERD_CODE_DONT_USE_THIS)
@@ -392,7 +390,7 @@ static CreateSmokePop(const Float: origin[3], Float: color[3], Float: brightness
             velocity[i] = (vForward[i] * 375) + (vUp[i] * 120)
         }
 
-        CreateGasSmoke(origin , velocity, color, brightness, .insideCloud = false)
+        CreateGasSmoke(origin , velocity, color, .insideCloud = false)
 
         angles[XS_YAW] = 270.0
         engfunc(EngFunc_AngleVectors, angles, vForward, vRight, vUp)
@@ -402,12 +400,12 @@ static CreateSmokePop(const Float: origin[3], Float: color[3], Float: brightness
             velocity[i] = (vForward[i] * 375) + (vUp[i] * 120)
         }
 
-        CreateGasSmoke(origin, velocity, color, brightness, .insideCloud = false)
+        CreateGasSmoke(origin, velocity, color, .insideCloud = false)
     }
     #endif
 }
 
-static CreateGasInside(const Float: origin[3], Float: color[3], const Float: brightness) {
+static CreateGasInside(const Float: origin[3], Float: color[4]) {
     new Float: step = 360.0 / amx_smokegren_pieces
 
     static Float: vAngles[3]
@@ -428,7 +426,6 @@ static CreateGasInside(const Float: origin[3], Float: color[3], const Float: bri
             _origin,
             Float: {0.0, 0.0, 0.0},
             color,
-            brightness,
             .insideCloud = true
         )
     }
@@ -448,7 +445,6 @@ static CreateGasInside(const Float: origin[3], Float: color[3], const Float: bri
             _origin,
             Float: {0.0, 0.0, 0.0},
             color,
-            brightness,
             .insideCloud = true
         )
     }
@@ -457,7 +453,6 @@ static CreateGasInside(const Float: origin[3], Float: color[3], const Float: bri
         origin,
         Float: {0.0, 0.0, 0.0},
         color,
-        brightness,
         .insideCloud = false
     )
 
@@ -477,7 +472,6 @@ static CreateGasInside(const Float: origin[3], Float: color[3], const Float: bri
             _origin,
             Float: {0.0, 0.0, 0.0},
             color,
-            brightness,
             .insideCloud = false
         )
 
@@ -496,7 +490,6 @@ static CreateGasInside(const Float: origin[3], Float: color[3], const Float: bri
             _origin,
             Float: {0.0, 0.0, 0.0},
             color,
-            brightness,
             .insideCloud = false
         )
     }
@@ -509,10 +502,11 @@ static Create_ConVars(const bool: createConfigFile = true) {
             "amx_smokegren_replacemode", "1",
             .has_min = true, .min_val = 0.0,
             .has_max = true, .max_val = 3.0,
-            .description = "0 - disabled (don't change client smoke); ^n\
-                            1 - main cloud over default smoke cloud; ^n\
+            .description = "Replacement method. ^n\
+                            0 - disabled (does not change client smoke); ^n\
+                            1 - main cloud on over client smoke cloud; ^n\
                             2 - main cloud only (optimization*); ^n\
-                            3 - fully recreation (2x load)."
+                            3 - fully recreated (2x load)."
         ),
         amx_smokegren_replacemode
     )
@@ -537,45 +531,16 @@ static Create_ConVars(const bool: createConfigFile = true) {
         amx_smokegren_pieces
     )
 
-    bind_pcvar_float(
+    hook_cvar_change(
         create_cvar(
-            "amx_smokegren_color_r", "175",
-            .has_min = true, .min_val = 1.0,
-            .has_max = true, .max_val = 255.0,
-            .description = "Red component of cloud color."
+            "amx_smokegren_color", "175 175 175 190",
+            .description = "The color of the smoke cloud is in the format [R G B A]. ^n\
+                            `-1 -1 -1` - random color.^n\
+                            `A` - is the opacity (transparency)"
         ),
-        amx_smokegren_color_r
+        "CVarChange_amx_smokegren_color"
     )
-
-    bind_pcvar_float(
-        create_cvar(
-            "amx_smokegren_color_g", "175",
-            .has_min = true, .min_val = 1.0,
-            .has_max = true, .max_val = 255.0,
-            .description = "Green component of cloud color."
-        ),
-        amx_smokegren_color_g
-    )
-
-    bind_pcvar_float(
-        create_cvar(
-            "amx_smokegren_color_b", "175.0",
-            .has_min = true, .min_val = 1.0,
-            .has_max = true, .max_val = 255.0,
-            .description = "Blue component of cloud color."
-        ),
-        amx_smokegren_color_b
-    )
-
-    bind_pcvar_float(
-        create_cvar(
-            "amx_smokegren_color_a", "190.0",
-            .has_min = true, .min_val = 0.0,
-            .has_max = true, .max_val = 255.0,
-            .description = "Alpha (transparency) component of cloud color. Client default is 190."
-        ),
-        amx_smokegren_color_a
-    )
+    CVarChange_amx_smokegren_color(0, "", "175 175 175 190")
 
     bind_pcvar_float(
         create_cvar(
@@ -592,13 +557,64 @@ static Create_ConVars(const bool: createConfigFile = true) {
     }
 }
 
-static Float: GetColorArray() {
-    new Float: color[3]
-    color[0] = amx_smokegren_color_r
-    color[1] = amx_smokegren_color_g
-    color[2] = amx_smokegren_color_b
+/**
+ * Parses a color buffer into an array of RGBA values.
+ *
+ * This function parses a color buffer (e.g., "255 0 0 128") into an array of RGBA values.
+ *
+ * @param buffer    The color buffer to parse.
+ * @return          Returns an array of RGBA values [R, G, B, A].
+ */
+stock Float: ParseColors4(const buffer[]) {
+    new stringParsed[4][4]
+    new Float: colors[4]
 
-    return color
+    if (!strlen(buffer))
+        return colors
+    
+    new parsedArgs = parse(
+        buffer,
+        stringParsed[0], charsmax(stringParsed[]),  // R
+        stringParsed[1], charsmax(stringParsed[]),  // G
+        stringParsed[2], charsmax(stringParsed[]),  // B
+        stringParsed[3], charsmax(stringParsed[])   // A
+    )
+
+    if (parsedArgs < 3)
+        return colors
+
+    for (new i; i < sizeof(stringParsed); i++)
+        colors[i] = strtof(stringParsed[i])
+
+    return colors
+}
+
+stock bool: IsRandomColors(const Float: colors[4]) {
+    return floatround(colors[0] + colors[1] + colors[2]) == -3
+}
+
+static Float: GetColors(const Float: colors[4]) {
+    new Float: newColors[4] = { 0.0, 0.0, 0.0, 255.0 }
+
+    if (IsRandomColors(colors)) {
+        for (new i; i < sizeof(newColors) - 1; i++) {
+            newColors[i] = random_float(1.0, 255.0)
+        }
+
+        return newColors
+    }
+
+    return colors
+}
+
+public CVarChange_amx_smokegren_color(const cvar, const oldValue[], const newValue[]) {
+    amx_smokegren_color = ParseColors4(newValue)
+
+    if (IsRandomColors(amx_smokegren_color))
+        return
+
+    for (new i; i < sizeof(amx_smokegren_color); i++)
+        amx_smokegren_color[i] = floatclamp(amx_smokegren_color[i], 1.0, 255.0)
 }
 
 static ChangeRenderMode(const classname[], const mode = kRenderNormal) {
