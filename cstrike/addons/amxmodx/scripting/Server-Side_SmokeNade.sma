@@ -97,7 +97,7 @@
 
 
 public stock const PluginName[]        = "Server-Side SmokeNade"
-public stock const PluginVersion[]     = "1.0.0-beta.1"
+public stock const PluginVersion[]     = "1.0.0-beta.2"
 public stock const PluginAuthor[]      = "Sergey Shorokhov"
 public stock const PluginURL[]         = "https://github.com/wopox1337/ServerSide_SmokeNade"
 public stock const PluginDescription[] = "Replacing client smoke with Server-Side SmokeNade."
